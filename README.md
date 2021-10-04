@@ -12,7 +12,7 @@
 
 ## Usage
 
-```
+```javascript
 /...
 import Toast from 'react-js-toast';
 
