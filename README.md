@@ -14,7 +14,7 @@
 
 ```
 /...
-import toast from 'react-js-toast';
+import Toast from 'react-js-toast';
 
 export default function App() {
     let alertMe = null;
