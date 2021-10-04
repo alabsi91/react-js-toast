@@ -4,6 +4,8 @@
 - Deferent icon and background color for every toast type.
 - Stack new toasts on top of each other.
 
+![](https://github.com/alabsi91/react-js-toast/blob/readme/toasts.png)
+
 ## Installation
 
 `npm install react-js-toast`

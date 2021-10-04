@@ -1,0 +1,27 @@
+{
+  "name": "react-js-toast",
+  "version": "1.0.0",
+  "description": "Android like snackbar notification.",
+  "main": "react-js-toast.js",
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alabsi91/react-js-toast.git"
+  },
+  "keywords": [
+    "react",
+    "reactjs",
+    "toast",
+    "snackbar",
+    "notification"
+  ],
+  "author": "Ahmed Alabsi",
+  "license": "ISC",
+  "types": "./react-js-toast.d.ts",
+  "bugs": {
+    "url": "https://github.com/alabsi91/react-js-toast/issues"
+  },
+  "homepage": "https://github.com/alabsi91/react-js-toast#readme"
+}
