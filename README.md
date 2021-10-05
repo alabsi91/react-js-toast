@@ -13,30 +13,24 @@
 ## Usage
 
 ```javascript
-/...
+//...
 import Toast from 'react-js-toast';
 
 export default function App() {
-    let alertMe = null;
+  let alertMe = null;
 
-    const toast_handle = () => {
-        // passing (message, type) params will replace Toast props.
-        alertMe.showToast('this is a toast notification', 'success');
-    }
+  const toast_handle = () => {
+    // passing (message, type) params will replace Toast props.
+    alertMe.showToast('this is a toast notification', 'success');
+  };
 
-    return(
-        <>
-            <Toast
-             ref={(node) => alertMe = node}
-             type='info'
-             message='my default message'
-            />
-
-            /...
-            <button onClick={toast_handle}>Show Toast Notification
-            </button>
-        </>
-    )
+  return (
+    <>
+      <Toast ref={node => (alertMe = node)} type='info' message='my default message' />
+      //...
+      <button onClick={toast_handle}>Show Toast Notification</button>
+    </>
+  );
 }
 ```
 
