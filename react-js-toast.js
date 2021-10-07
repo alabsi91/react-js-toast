@@ -13,6 +13,8 @@ require("core-js/modules/es.parse-int.js");
 
 var _react = _interopRequireWildcard(require("react"));
 
+var _requestAnimationNumber = require("request-animation-number");
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -26,8 +28,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const wait = time => new Promise(e => setTimeout(e, time));
 
 let tempStack = [];
+let isMounted = true;
 const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
-  var _props$duration, _props$stackable, _props$rtl;
+  var _props$duration, _props$animationDutat, _props$stackable, _props$rtl;
 
   const type = props.type || 'info'; // 'warning','error', 'success'
 
@@ -36,6 +39,8 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
   const animation = props.animation || 'fade'; // 'slide'
 
   const duration = (_props$duration = props.duration) !== null && _props$duration !== void 0 ? _props$duration : 3000;
+  const animation_duration = (_props$animationDutat = props.animationDutation) !== null && _props$animationDutat !== void 0 ? _props$animationDutat : 300;
+  const easingFunction = props.ease || 'easeOutExpo';
   const message = props.message || 'Toast message goes here';
   const text_style = props.textStyle || {};
   const toast_style = props.toastStyle || {};
@@ -55,6 +60,8 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
   } : {
     marginLeft: '20px'
   });
+
+  const [stack, setStack] = (0, _react.useState)(tempStack);
 
   const Icon = porps => {
     switch (porps.type) {
@@ -97,25 +104,58 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
 
   const ToastElement = props => {
     let el = null;
-    const [opacity, setOpacity] = (0, _react.useState)(animation === 'fade' ? 0 : 1);
-    const [translate, setTranslate] = (0, _react.useState)(animation === 'slide' ? ((parseInt(toast_style === null || toast_style === void 0 ? void 0 : toast_style.height) || 50) + 20) * (position === 'top' ? -1 : 1) : 0);
 
     const fadeAnimation = async () => {
       const element = el;
-      setOpacity(1);
-      await wait(duration - 250);
-      setOpacity(0);
-      element.style.height = '0px';
-      element.style.marginBottom = '0px';
+      const height = parseInt(window.getComputedStyle(element).height);
+      const margin = parseInt(window.getComputedStyle(element).marginBottom);
+      (0, _requestAnimationNumber.requestNum)({
+        from: 0,
+        to: 1,
+        duration: animation_duration,
+        easingFunction
+      }, o => {
+        element.style.opacity = o;
+      });
+      if (!isMounted) return;
+      (0, _requestAnimationNumber.requestNum)({
+        from: [height, margin, 1],
+        to: [0, 0, 0],
+        duration: animation_duration,
+        easingFunction,
+        delay: duration - animation_duration
+      }, (h, m, o) => {
+        element.style.height = h + 'px';
+        element.style.marginBottom = m + 'px';
+        element.style.opacity = o;
+      });
     };
 
     const slideAnimation = async () => {
       const element = el;
-      setTranslate(0);
-      await wait(duration - 250);
-      setTranslate(((parseInt(toast_style === null || toast_style === void 0 ? void 0 : toast_style.height) || 50) + 20) * (position === 'top' ? -1 : 1));
-      element.style.height = '0px';
-      element.style.marginBottom = '0px';
+      const height = parseInt(window.getComputedStyle(element).height);
+      const margin = parseInt(window.getComputedStyle(element).marginBottom);
+      const transformValue = ((parseInt(toast_style === null || toast_style === void 0 ? void 0 : toast_style.height) || 50) + 20) * (position === 'top' ? -1 : 1);
+      (0, _requestAnimationNumber.requestNum)({
+        from: transformValue,
+        to: 0,
+        duration: animation_duration,
+        easingFunction
+      }, t => {
+        element.style.transform = "translateY(".concat(t, "px)");
+      });
+      if (!isMounted) return;
+      (0, _requestAnimationNumber.requestNum)({
+        from: [height, margin, 0],
+        to: [0, 0, transformValue],
+        duration: animation_duration,
+        easingFunction,
+        delay: duration - animation_duration
+      }, (h, m, t) => {
+        element.style.height = h + 'px';
+        element.style.marginBottom = m + 'px';
+        element.style.transform = "translateY(".concat(t, "px)");
+      });
     };
 
     (0, _react.useEffect)(() => {
@@ -124,7 +164,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     }, []);
     return /*#__PURE__*/_react.default.createElement("div", {
       ref: node => el = node,
-      style: _objectSpread(_objectSpread({
+      style: _objectSpread({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -137,13 +177,9 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
         marginBottom: '20px',
         boxShadow: '#00000050 0px 2px 5px 0px',
         overflow: 'hidden',
-        opacity,
-        transform: "translateY(".concat(translate, "px)")
-      }, toast_style), {}, {
-        transitionProperty: 'opacity, height, margin-bottom, transform',
-        transitionDuration: '250ms',
-        transitionTimingFunction: 'ease'
-      })
+        opacity: animation === 'fade' ? 0 : 1,
+        transform: "translateY(".concat(animation === 'slide' ? ((parseInt(toast_style === null || toast_style === void 0 ? void 0 : toast_style.height) || 50) + 20) * (position === 'top' ? -1 : 1) : 0, "px)")
+      }, toast_style)
     }, CustomIcon ? /*#__PURE__*/_react.default.createElement(CustomIcon, null) : /*#__PURE__*/_react.default.createElement(Icon, {
       type: props.type || type
     }), /*#__PURE__*/_react.default.createElement("p", {
@@ -156,8 +192,6 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       }, text_style)
     }, props.message || message));
   };
-
-  const [stack, setStack] = (0, _react.useState)(tempStack);
   /**
    * - message: Toast text message.
    * @param {String} message
@@ -165,6 +199,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
    * - type: Every type has different icon and background color.
    * @param {'info' | 'warning' | 'error' | 'success'} type
    */
+
 
   const showToast = async (message, type) => {
     const elKey = Math.random() * 1000;
@@ -179,6 +214,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     }), ...(stackable ? tempStack : [])];
     setStack(tempStack);
     await wait(duration);
+    if (!isMounted) return;
     tempStack = tempStack.filter(e => e.key !== elKey + '');
     setStack(tempStack);
   };
@@ -186,6 +222,13 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
   (0, _react.useImperativeHandle)(ref, () => ({
     showToast
   }));
+  (0, _react.useEffect)(() => {
+    isMounted = true;
+    return () => {
+      isMounted = false;
+      tempStack = [];
+    };
+  }, []);
   return /*#__PURE__*/_react.default.createElement("div", {
     style: _objectSpread(_objectSpread({
       position: 'fixed'
