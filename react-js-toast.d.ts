@@ -150,6 +150,8 @@ type NamedColor =
     | "yellow"
     | "yellowgreen";
 
+type requestFrameEasing = "linear" | "easeInSine" | "easeOutSine" | "easeInOutSine" | "easeInQuad" | "easeOutQuad" | "easeInOutQuad" | "easeInCubic" | "easeOutCubic" | "easeInOutCubic" | "easeInQuart" | "easeOutQuart" | "easeInOutQuart" | "easeInQuint" | "easeOutQuint" | "easeInOutQuint" | "easeInExpo" | "easeOutExpo" | "easeInOutExpo" | "easeInCirc" | "easeOutCirc" | "easeInOutCirc" | "easeInBack" | "easeOutBack" | "easeInOutBack" | "easeInElastic" | "easeOutElastic" | "easeInOutElastic" | "easeInBounce" | "easeOutBounce" | "easeInOutBounce";
+
 interface ToastProps {
     /**
      * - Toast text message.
@@ -174,6 +176,19 @@ interface ToastProps {
      * - **Default Value** 'fade'
      */
     animation?: 'fade' | 'slide' | 'none'
+
+    /**
+     * - Toast animaion duration in ms.
+     * - **Default Value** 300
+     */
+    animationDutation?: Number
+
+    /**
+     * - Toast animaion timing function.
+     * - Easing functions specify the rate of change of the number over time.
+     * - **Default Value** 'easeOutExpo'
+     */
+    ease?: requestFrameEasing | Function;
 
     /**
      * - The time that take to hide toast in ms.

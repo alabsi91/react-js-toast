@@ -1,6 +1,6 @@
 {
   "name": "react-js-toast",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Android like toast (snackbar) notification.",
   "main": "react-js-toast.js",
   "scripts": {
@@ -9,6 +9,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alabsi91/react-js-toast.git"
+  },
+  "dependencies": {
+    "request-animation-number": "^1.0.6"
   },
   "keywords": [
     "react",

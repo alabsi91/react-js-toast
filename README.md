@@ -51,6 +51,20 @@ export default function App() {
 - Toast animaion style.
 - **Default Value** 'fade'
 
+### animationDutation : _[Number] [optional]_
+
+- Toast animaion duration in ms.
+- **Default Value** 300
+
+### ease : _[String] [optional]_
+
+- Toast animaion timing function.
+- Easing functions specify the rate of change of the number over time.
+- Avaliable Easing functions :
+  `"linear", "easeInSine", "easeOutSine", "easeInOutSine", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInBack", "easeOutBack", "easeInOutBack", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBounce", "easeOutBounce", "easeInOutBounce"`
+- If you want to provide your own timing-function make sure that the function takes one parameter and returns one value.
+- **Default Value** 'easeOutExpo'
+
 ### position : _['top' | 'bottom'] [optional]_
 
 - Show toast from the bottom or from the top of the body page.
