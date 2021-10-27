@@ -1,11 +1,13 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { requestNum } from 'request-animation-number';
 
 const wait = time => new Promise(e => setTimeout(e, time));
 
-let tempStack = [];
-let isMounted = true;
 const Toast = forwardRef((props, ref) => {
+  const tempStack = useRef([]);
+  const isMounted = useRef(true);
+
+  // props
   const type = props.type || 'info'; // 'warning','error', 'success'
   const position = props.position || 'bottom'; // 'top'
   const animation = props.animation || 'fade'; // 'slide'
@@ -18,7 +20,73 @@ const Toast = forwardRef((props, ref) => {
   const CustomIcon = props.customIcon;
   const icon_color = props.iconColor || '#fff';
   const stackable = props.stackable ?? true;
+  const stackLimit = props.stackLimit ?? 5;
   const rtl = props.rtl ?? false;
+  const zIndex = props.zIndex ?? 1000;
+
+
+  const checkTypes = () => {
+    if (!new Set(['info', 'warning', 'error', 'success']).has(type))
+      console.error('react-js-toast: props.type has invalid value.');
+
+    if (!new Set(['bottom', 'top']).has(position)) console.error('react-js-toast: props.position has invalid value.');
+
+    if (!new Set(['fade', 'slide']).has(animation)) console.error('react-js-toast: props.animation has invalid value.');
+
+    if (typeof duration !== 'number' || duration < 0) console.error('react-js-toast: props.duration has invalid value.');
+
+    if (typeof animation_duration !== 'number' || animation_duration < 0)
+      console.error('react-js-toast: props.animationDutation has invalid value.');
+
+    if (
+      (!new Set([
+        'linear',
+        'easeInSine',
+        'easeOutSine',
+        'easeInOutSine',
+        'easeInQuad',
+        'easeOutQuad',
+        'easeInOutQuad',
+        'easeInCubic',
+        'easeOutCubic',
+        'easeInOutCubic',
+        'easeInQuart',
+        'easeOutQuart',
+        'easeInOutQuart',
+        'easeInQuint',
+        'easeOutQuint',
+        'easeInOutQuint',
+        'easeInExpo',
+        'easeOutExpo',
+        'easeInOutExpo',
+        'easeInCirc',
+        'easeOutCirc',
+        'easeInOutCirc',
+        'easeInBack',
+        'easeOutBack',
+        'easeInOutBack',
+        'easeInElastic',
+        'easeOutElastic',
+        'easeInOutElastic',
+        'easeInBounce',
+        'easeOutBounce',
+        'easeInOutBounce',
+      ]).has(easingFunction) &&
+        typeof easingFunction === 'string') ||
+      (typeof easingFunction !== 'string' && typeof easingFunction !== 'function')
+    )
+      console.error('react-js-toast: props.ease has invalid value.');
+
+    if (typeof text_style !== 'object') console.error('react-js-toast: props.textStyle has invalid value.');
+    if (typeof toast_style !== 'object') console.error('react-js-toast: props.toastStyle has invalid value.');
+    if (typeof icon_color !== 'string') console.error('react-js-toast: props.iconColor has invalid value.');
+    if (typeof stackable !== 'boolean') console.error('react-js-toast: props.stackable has invalid value.');
+    if (typeof stackLimit !== 'number' || stackLimit < 0) console.error('react-js-toast: props.stackLimit has invalid value.');
+    if (typeof rtl !== 'boolean') console.error('react-js-toast: props.rtl has invalid value.');
+    if (typeof zIndex !== 'number') console.error('react-js-toast: props.zIndex has invalid value.');
+
+  };
+  checkTypes();
 
   const backgroundColor = type =>
     type === 'error'
@@ -38,7 +106,7 @@ const Toast = forwardRef((props, ref) => {
     ...(rtl ? { marginRight: '20px' } : { marginLeft: '20px' }),
   };
 
-  const [stack, setStack] = useState(tempStack);
+  const [stack, setStack] = useState(tempStack.current);
 
   const Icon = porps => {
     switch (porps.type) {
@@ -85,7 +153,7 @@ const Toast = forwardRef((props, ref) => {
         element.style.opacity = o;
       });
 
-      if (!isMounted) return;
+      if (!isMounted.current) return;
 
       requestNum(
         {
@@ -112,7 +180,7 @@ const Toast = forwardRef((props, ref) => {
         element.style.transform = `translateY(${t}px)`;
       });
 
-      if (!isMounted) return;
+      if (!isMounted.current) return;
 
       requestNum(
         {
@@ -185,25 +253,27 @@ const Toast = forwardRef((props, ref) => {
    */
   const showToast = async (message, type) => {
     const elKey = Math.random() * 1000;
-    tempStack =
-      position === 'top'
-        ? [...(stackable ? tempStack : []), <ToastElement key={elKey} message={message} type={type} />]
-        : [<ToastElement key={elKey} message={message} type={type} />, ...(stackable ? tempStack : [])];
+    tempStack.current =
+      tempStack.current.length < stackLimit
+        ? position === 'top'
+          ? [...(stackable ? tempStack.current : []), <ToastElement key={elKey} message={message} type={type} />]
+          : [<ToastElement key={elKey} message={message} type={type} />, ...(stackable ? tempStack.current : [])]
+        : tempStack.current;
 
-    setStack(tempStack);
+    setStack(tempStack.current);
     await wait(duration);
-    if (!isMounted) return;
-    tempStack = tempStack.filter(e => e.key !== elKey + '');
-    setStack(tempStack);
+    if (!isMounted.current) return;
+    tempStack.current = tempStack.current.filter(e => e.key !== elKey + '');
+    setStack(tempStack.current);
   };
 
   useImperativeHandle(ref, () => ({ showToast }));
 
   useEffect(() => {
-    isMounted = true;
+    isMounted.current = true;
     return () => {
-      isMounted = false;
-      tempStack = [];
+      isMounted.current = false;
+      tempStack.current = [];
     };
   }, []);
 
@@ -215,7 +285,7 @@ const Toast = forwardRef((props, ref) => {
         left: '0px',
         width: '100vw',
         direction: rtl ? 'rtl' : 'ltr',
-        zIndex: 1000,
+        zIndex,
       }}
     >
       {stack}
