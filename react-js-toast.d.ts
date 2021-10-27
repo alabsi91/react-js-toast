@@ -155,44 +155,44 @@ type requestFrameEasing = "linear" | "easeInSine" | "easeOutSine" | "easeInOutSi
 interface ToastProps {
     /**
      * - Toast text message.
-     * - **Default Value** 'Toast message goes here'
+     * - **Default Value** 'Toast message goes here`
      */
     message?: String
 
     /**
      * - Every type has different icon and background color.
-     * - **Default Value** 'info'
+     * - **Default Value** `info`
      */
     type?: 'info' | 'warning' | 'error' | 'success'
 
     /**
      * - Show toast from the bottom or from the top of the body page.
-     * - **Default Value** 'bottom'
+     * - **Default Value** `bottom`
      */
     position?: 'top' | 'bottom'
 
     /**
      * - Toast animaion style.
-     * - **Default Value** 'fade'
+     * - **Default Value** `fade`
      */
     animation?: 'fade' | 'slide' | 'none'
 
     /**
      * - Toast animaion duration in ms.
-     * - **Default Value** 300
+     * - **Default Value** `300`
      */
     animationDutation?: Number
 
     /**
      * - Toast animaion timing function.
      * - Easing functions specify the rate of change of the number over time.
-     * - **Default Value** 'easeOutExpo'
+     * - **Default Value** `easeOutExpo`
      */
     ease?: requestFrameEasing | Function;
 
     /**
      * - The time that take to hide toast in ms.
-     * - **Default Value** 3000
+     * - **Default Value** `3000`
      */
     duration?: Number
 
@@ -207,8 +207,8 @@ interface ToastProps {
     textStyle?: React.CSSProperties
 
     /**
-     * - The default icon color.
-     * - **Default Value** '#fff'
+     * - Icone default color.
+     * - **Default Value** `#fff`
      */
     iconColor?: NamedColor
 
@@ -219,15 +219,27 @@ interface ToastProps {
 
     /**
      * - Allow toasts to stack on top of each other, if false new toast will replace the old one.
-     * - **Default Value** true
+     * - **Default Value** `true`
      */
     stackable?: Boolean
 
     /**
+     * - Toasts stack limit number, no new toast will be added to the stack after reaching the limit.
+     * - **Default Value** `5`
+     */
+    stackLimit?: Number
+
+    /**
      * - For right to left languages.
-     * - **Default Value** false
+     * - **Default Value** `false`
      */
     rtl?: Boolean
+
+    /** 
+     * - Toast wrapper element z-index css value.
+     * - **Default Value** `1000`
+     */
+    zIndex?: number;
 }
 
 declare const Toast: React.FunctionComponent<ToastProps>

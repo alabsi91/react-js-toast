@@ -27,10 +27,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 const wait = time => new Promise(e => setTimeout(e, time));
 
-let tempStack = [];
-let isMounted = true;
 const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
-  var _props$duration, _props$animationDutat, _props$stackable, _props$rtl;
+  var _props$duration, _props$animationDutat, _props$stackable, _props$stackLimit, _props$rtl, _props$zIndex;
+
+  const tempStack = (0, _react.useRef)([]);
+  const isMounted = (0, _react.useRef)(true); // props
 
   const type = props.type || 'info'; // 'warning','error', 'success'
 
@@ -47,7 +48,27 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
   const CustomIcon = props.customIcon;
   const icon_color = props.iconColor || '#fff';
   const stackable = (_props$stackable = props.stackable) !== null && _props$stackable !== void 0 ? _props$stackable : true;
+  const stackLimit = (_props$stackLimit = props.stackLimit) !== null && _props$stackLimit !== void 0 ? _props$stackLimit : 5;
   const rtl = (_props$rtl = props.rtl) !== null && _props$rtl !== void 0 ? _props$rtl : false;
+  const zIndex = (_props$zIndex = props.zIndex) !== null && _props$zIndex !== void 0 ? _props$zIndex : 1000;
+
+  const checkTypes = () => {
+    if (!new Set(['info', 'warning', 'error', 'success']).has(type)) console.error('react-js-toast: props.type has invalid value.');
+    if (!new Set(['bottom', 'top']).has(position)) console.error('react-js-toast: props.position has invalid value.');
+    if (!new Set(['fade', 'slide']).has(animation)) console.error('react-js-toast: props.animation has invalid value.');
+    if (typeof duration !== 'number' || duration < 0) console.error('react-js-toast: props.duration has invalid value.');
+    if (typeof animation_duration !== 'number' || animation_duration < 0) console.error('react-js-toast: props.animationDutation has invalid value.');
+    if (!new Set(['linear', 'easeInSine', 'easeOutSine', 'easeInOutSine', 'easeInQuad', 'easeOutQuad', 'easeInOutQuad', 'easeInCubic', 'easeOutCubic', 'easeInOutCubic', 'easeInQuart', 'easeOutQuart', 'easeInOutQuart', 'easeInQuint', 'easeOutQuint', 'easeInOutQuint', 'easeInExpo', 'easeOutExpo', 'easeInOutExpo', 'easeInCirc', 'easeOutCirc', 'easeInOutCirc', 'easeInBack', 'easeOutBack', 'easeInOutBack', 'easeInElastic', 'easeOutElastic', 'easeInOutElastic', 'easeInBounce', 'easeOutBounce', 'easeInOutBounce']).has(easingFunction) && typeof easingFunction === 'string' || typeof easingFunction !== 'string' && typeof easingFunction !== 'function') console.error('react-js-toast: props.ease has invalid value.');
+    if (typeof text_style !== 'object') console.error('react-js-toast: props.textStyle has invalid value.');
+    if (typeof toast_style !== 'object') console.error('react-js-toast: props.toastStyle has invalid value.');
+    if (typeof icon_color !== 'string') console.error('react-js-toast: props.iconColor has invalid value.');
+    if (typeof stackable !== 'boolean') console.error('react-js-toast: props.stackable has invalid value.');
+    if (typeof stackLimit !== 'number' || stackLimit < 0) console.error('react-js-toast: props.stackLimit has invalid value.');
+    if (typeof rtl !== 'boolean') console.error('react-js-toast: props.rtl has invalid value.');
+    if (typeof zIndex !== 'number') console.error('react-js-toast: props.zIndex has invalid value.');
+  };
+
+  checkTypes();
 
   const backgroundColor = type => type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : type === 'info' ? '#2196f3' : type === 'success' ? '#4caf50' : '#4caf50';
 
@@ -61,7 +82,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     marginLeft: '20px'
   });
 
-  const [stack, setStack] = (0, _react.useState)(tempStack);
+  const [stack, setStack] = (0, _react.useState)(tempStack.current);
 
   const Icon = porps => {
     switch (porps.type) {
@@ -117,7 +138,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       }, o => {
         element.style.opacity = o;
       });
-      if (!isMounted) return;
+      if (!isMounted.current) return;
       (0, _requestAnimationNumber.requestNum)({
         from: [height, margin, 1],
         to: [0, 0, 0],
@@ -144,7 +165,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       }, t => {
         element.style.transform = "translateY(".concat(t, "px)");
       });
-      if (!isMounted) return;
+      if (!isMounted.current) return;
       (0, _requestAnimationNumber.requestNum)({
         from: [height, margin, 0],
         to: [0, 0, transformValue],
@@ -203,7 +224,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
 
   const showToast = async (message, type) => {
     const elKey = Math.random() * 1000;
-    tempStack = position === 'top' ? [...(stackable ? tempStack : []), /*#__PURE__*/_react.default.createElement(ToastElement, {
+    tempStack.current = tempStack.current.length < stackLimit ? position === 'top' ? [...(stackable ? tempStack.current : []), /*#__PURE__*/_react.default.createElement(ToastElement, {
       key: elKey,
       message: message,
       type: type
@@ -211,22 +232,22 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       key: elKey,
       message: message,
       type: type
-    }), ...(stackable ? tempStack : [])];
-    setStack(tempStack);
+    }), ...(stackable ? tempStack.current : [])] : tempStack.current;
+    setStack(tempStack.current);
     await wait(duration);
-    if (!isMounted) return;
-    tempStack = tempStack.filter(e => e.key !== elKey + '');
-    setStack(tempStack);
+    if (!isMounted.current) return;
+    tempStack.current = tempStack.current.filter(e => e.key !== elKey + '');
+    setStack(tempStack.current);
   };
 
   (0, _react.useImperativeHandle)(ref, () => ({
     showToast
   }));
   (0, _react.useEffect)(() => {
-    isMounted = true;
+    isMounted.current = true;
     return () => {
-      isMounted = false;
-      tempStack = [];
+      isMounted.current = false;
+      tempStack.current = [];
     };
   }, []);
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -240,7 +261,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       left: '0px',
       width: '100vw',
       direction: rtl ? 'rtl' : 'ltr',
-      zIndex: 1000
+      zIndex
     })
   }, stack);
 });
