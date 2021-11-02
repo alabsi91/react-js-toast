@@ -127,7 +127,7 @@ const Toast = forwardRef((props, ref) => {
     width: '24px',
     height: '24px',
     fill: icon_color,
-    ...(rtl ? { marginRight: '20px' } : { marginLeft: '20px' }),
+    margin: 'auto',
   };
 
   const [stack, setStack] = useState(tempStack.current);
@@ -233,9 +233,8 @@ const Toast = forwardRef((props, ref) => {
         ref={node => (el = node)}
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 2fr 1fr',
+          gridTemplateColumns: '1fr 4fr 1fr',
           alignItems: 'center',
-          height: '50px',
           width: '90vw',
           maxWidth: '500px',
           borderRadius: '10px',
@@ -258,7 +257,7 @@ const Toast = forwardRef((props, ref) => {
             fontSize: '18px',
             color: '#fff',
             textAlign: 'center',
-            margin: 'auto',
+            margin: '15px auto',
             ...text_style,
           }}
         >
