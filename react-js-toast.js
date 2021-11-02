@@ -10,6 +10,7 @@ const Toast = forwardRef((props, ref) => {
   // props
   const type = props.type || 'info'; // 'warning','error', 'success'
   const position = props.position || 'bottom'; // 'top'
+  const offset = props.offset ?? 30;
   const animation = props.animation || 'fade'; // 'slide'
   const duration = props.duration ?? 3000;
   const animation_duration = props.animationDutation ?? 300;
@@ -24,12 +25,13 @@ const Toast = forwardRef((props, ref) => {
   const rtl = props.rtl ?? false;
   const zIndex = props.zIndex ?? 1000;
 
-
   const checkTypes = () => {
     if (!new Set(['info', 'warning', 'error', 'success']).has(type))
       console.error('react-js-toast: props.type has invalid value.');
 
     if (!new Set(['bottom', 'top']).has(position)) console.error('react-js-toast: props.position has invalid value.');
+
+    if (typeof offset !== 'number') console.error('react-js-toast: props.offset has invalid value.');
 
     if (!new Set(['fade', 'slide']).has(animation)) console.error('react-js-toast: props.animation has invalid value.');
 
@@ -84,7 +86,29 @@ const Toast = forwardRef((props, ref) => {
     if (typeof stackLimit !== 'number' || stackLimit < 0) console.error('react-js-toast: props.stackLimit has invalid value.');
     if (typeof rtl !== 'boolean') console.error('react-js-toast: props.rtl has invalid value.');
     if (typeof zIndex !== 'number') console.error('react-js-toast: props.zIndex has invalid value.');
-
+    const allProps = new Set([
+      'type',
+      'position',
+      'offset',
+      'animation',
+      'animationDutation',
+      'duration',
+      'ease',
+      'message',
+      'textStyle',
+      'toastStyle',
+      'customIcon',
+      'iconColor',
+      'stackable',
+      'stackLimit',
+      'rtl',
+      'zIndex',
+    ]);
+    for (const key in props) {
+      if (Object.hasOwnProperty.call(props, key)) {
+        if (!allProps.has(key)) console.error(`react-js-toast: can't recognize props.${key} it's not a valid prop.`);
+      }
+    }
   };
   checkTypes();
 
@@ -208,8 +232,8 @@ const Toast = forwardRef((props, ref) => {
       <div
         ref={node => (el = node)}
         style={{
-          display: 'flex',
-          flexDirection: 'row',
+          display: 'grid',
+          gridTemplateColumns: '1fr 2fr 1fr',
           alignItems: 'center',
           height: '50px',
           width: '90vw',
@@ -281,7 +305,7 @@ const Toast = forwardRef((props, ref) => {
     <div
       style={{
         position: 'fixed',
-        ...(position === 'top' ? { top: '30px' } : { bottom: '30px' }),
+        ...(position === 'top' ? { top: offset + 'px' } : { bottom: offset + 'px' }),
         left: '0px',
         width: '100vw',
         direction: rtl ? 'rtl' : 'ltr',

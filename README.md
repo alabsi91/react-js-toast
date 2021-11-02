@@ -17,16 +17,16 @@
 import Toast from 'react-js-toast';
 
 export default function App() {
-  let alertMe = null;
+  let toastMethod = null;
 
   const toast_handle = () => {
     // passing (message, type) params will replace Toast props.
-    alertMe.showToast('this is a toast notification', 'success');
+    toastMethod.showToast('this is a toast notification', 'success');
   };
 
   return (
     <>
-      <Toast ref={node => (alertMe = node)} type='info' message='my default message' />
+      <Toast ref={node => (toastMethod = node)} type='info' message='my default message' />
       // ...
       <button onClick={toast_handle}>Show Toast Notification</button>
     </>
@@ -59,10 +59,8 @@ export default function App() {
 ### ease : _[String] [optional]_
 
 - Toast animaion timing function.
-- Easing functions specify the rate of change of the number over time.
+- Check [easings.net](https://easings.net/) to learn more.
 - **Default Value** `easeOutExpo`
-- Avaliable Easing functions :
-  `"linear", "easeInSine", "easeOutSine", "easeInOutSine", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInBack", "easeOutBack", "easeInOutBack", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBounce", "easeOutBounce", "easeInOutBounce"`
 - If you want to provide your own timing-function make sure that the function takes one parameter and returns one value.
 
 ```javascript
@@ -76,9 +74,14 @@ function easeInQuad(x) {
 - Show toast from the bottom or from the top of the body page.
 - **Default Value** `bottom`
 
+### offset : _[Number] [optional]_
+
+- Toast offset from the `bottom` or from the `top` in pixels depending on the `position` prop value.
+- **Default Value** `30`
+
 ### duration : _[Number] [optional]_
 
-- The time that take to hide toast in ms.
+- The time that takes to hide toast in ms.
 - **Default Value** `3000`
 
 ### toastStyle : _[Object] [optional]_
@@ -134,5 +137,5 @@ const Custom_icon = () => {
 
 ### showToast()
 
-- `ShowToast(message?: String, type?: 'info' | 'warning' | 'error' | 'success')`
+- `showToast(message?: String, type?: 'info' | 'warning' | 'error' | 'success')`
 - **Note:** Passing params will replace given porps values.

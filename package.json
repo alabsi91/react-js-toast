@@ -1,6 +1,6 @@
 {
   "name": "react-js-toast",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Android like toast (snackbar) notification.",
   "main": "react-js-toast.js",
   "scripts": {
