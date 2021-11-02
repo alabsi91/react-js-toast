@@ -81,16 +81,12 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
 
   const backgroundColor = type => type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : type === 'info' ? '#2196f3' : type === 'success' ? '#4caf50' : '#4caf50';
 
-  const icon_style = _objectSpread({
+  const icon_style = {
     width: '24px',
     height: '24px',
-    fill: icon_color
-  }, rtl ? {
-    marginRight: '20px'
-  } : {
-    marginLeft: '20px'
-  });
-
+    fill: icon_color,
+    margin: 'auto'
+  };
   const [stack, setStack] = (0, _react.useState)(tempStack.current);
 
   const Icon = porps => {
@@ -196,9 +192,8 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
       ref: node => el = node,
       style: _objectSpread({
         display: 'grid',
-        gridTemplateColumns: '1fr 2fr 1fr',
+        gridTemplateColumns: '1fr 4fr 1fr',
         alignItems: 'center',
-        height: '50px',
         width: '90vw',
         maxWidth: '500px',
         borderRadius: '10px',
@@ -218,7 +213,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
         fontSize: '18px',
         color: '#fff',
         textAlign: 'center',
-        margin: 'auto'
+        margin: '15px auto'
       }, text_style)
     }, props.message || message));
   };
