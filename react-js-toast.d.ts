@@ -172,6 +172,12 @@ interface ToastProps {
     position?: 'top' | 'bottom'
 
     /**
+     * - Toast offset from the `bottom` or from the `top` in pixels depending on the `position` prop value.
+     * - **Default Value** `30`
+     */
+    offset?: Number
+
+    /**
      * - Toast animaion style.
      * - **Default Value** `fade`
      */
@@ -192,6 +198,7 @@ interface ToastProps {
 
     /**
      * - The time that take to hide toast in ms.
+     * - Check [easings.net](https://easings.net/) to learn more.
      * - **Default Value** `3000`
      */
     duration?: Number
@@ -240,8 +247,18 @@ interface ToastProps {
      * - **Default Value** `1000`
      */
     zIndex?: number;
-}
 
+    /**
+     * - Toast Methods
+     */
+    ref?: (node: ToastMethods) => void
+}
+interface ToastMethods {
+    /**
+     * - **Note:** Passing params will replace given porps values.
+     */
+    showToast?: (message?: String, type?: 'info' | 'warning' | 'error' | 'success') => void
+}
 declare const Toast: React.FunctionComponent<ToastProps>
 
 export default Toast

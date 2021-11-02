@@ -28,7 +28,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const wait = time => new Promise(e => setTimeout(e, time));
 
 const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
-  var _props$duration, _props$animationDutat, _props$stackable, _props$stackLimit, _props$rtl, _props$zIndex;
+  var _props$offset, _props$duration, _props$animationDutat, _props$stackable, _props$stackLimit, _props$rtl, _props$zIndex;
 
   const tempStack = (0, _react.useRef)([]);
   const isMounted = (0, _react.useRef)(true); // props
@@ -37,6 +37,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
 
   const position = props.position || 'bottom'; // 'top'
 
+  const offset = (_props$offset = props.offset) !== null && _props$offset !== void 0 ? _props$offset : 30;
   const animation = props.animation || 'fade'; // 'slide'
 
   const duration = (_props$duration = props.duration) !== null && _props$duration !== void 0 ? _props$duration : 3000;
@@ -55,6 +56,7 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
   const checkTypes = () => {
     if (!new Set(['info', 'warning', 'error', 'success']).has(type)) console.error('react-js-toast: props.type has invalid value.');
     if (!new Set(['bottom', 'top']).has(position)) console.error('react-js-toast: props.position has invalid value.');
+    if (typeof offset !== 'number') console.error('react-js-toast: props.offset has invalid value.');
     if (!new Set(['fade', 'slide']).has(animation)) console.error('react-js-toast: props.animation has invalid value.');
     if (typeof duration !== 'number' || duration < 0) console.error('react-js-toast: props.duration has invalid value.');
     if (typeof animation_duration !== 'number' || animation_duration < 0) console.error('react-js-toast: props.animationDutation has invalid value.');
@@ -66,6 +68,13 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     if (typeof stackLimit !== 'number' || stackLimit < 0) console.error('react-js-toast: props.stackLimit has invalid value.');
     if (typeof rtl !== 'boolean') console.error('react-js-toast: props.rtl has invalid value.');
     if (typeof zIndex !== 'number') console.error('react-js-toast: props.zIndex has invalid value.');
+    const allProps = new Set(['type', 'position', 'offset', 'animation', 'animationDutation', 'duration', 'ease', 'message', 'textStyle', 'toastStyle', 'customIcon', 'iconColor', 'stackable', 'stackLimit', 'rtl', 'zIndex']);
+
+    for (const key in props) {
+      if (Object.hasOwnProperty.call(props, key)) {
+        if (!allProps.has(key)) console.error("react-js-toast: can't recognize props.".concat(key, " it's not a valid prop."));
+      }
+    }
   };
 
   checkTypes();
@@ -186,8 +195,8 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     return /*#__PURE__*/_react.default.createElement("div", {
       ref: node => el = node,
       style: _objectSpread({
-        display: 'flex',
-        flexDirection: 'row',
+        display: 'grid',
+        gridTemplateColumns: '1fr 2fr 1fr',
         alignItems: 'center',
         height: '50px',
         width: '90vw',
@@ -254,9 +263,9 @@ const Toast = /*#__PURE__*/(0, _react.forwardRef)((props, ref) => {
     style: _objectSpread(_objectSpread({
       position: 'fixed'
     }, position === 'top' ? {
-      top: '30px'
+      top: offset + 'px'
     } : {
-      bottom: '30px'
+      bottom: offset + 'px'
     }), {}, {
       left: '0px',
       width: '100vw',
