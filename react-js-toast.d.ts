@@ -148,16 +148,17 @@ type NamedColor =
     | "white"
     | "whitesmoke"
     | "yellow"
-    | "yellowgreen";
+    | "yellowgreen"
+    | (string & {})
 
 type requestFrameEasing = "linear" | "easeInSine" | "easeOutSine" | "easeInOutSine" | "easeInQuad" | "easeOutQuad" | "easeInOutQuad" | "easeInCubic" | "easeOutCubic" | "easeInOutCubic" | "easeInQuart" | "easeOutQuart" | "easeInOutQuart" | "easeInQuint" | "easeOutQuint" | "easeInOutQuint" | "easeInExpo" | "easeOutExpo" | "easeInOutExpo" | "easeInCirc" | "easeOutCirc" | "easeInOutCirc" | "easeInBack" | "easeOutBack" | "easeInOutBack" | "easeInElastic" | "easeOutElastic" | "easeInOutElastic" | "easeInBounce" | "easeOutBounce" | "easeInOutBounce";
 
 interface ToastProps {
     /**
      * - Toast text message.
-     * - **Default Value** 'Toast message goes here`
+     * - **Default Value** `Toast message goes here`
      */
-    message?: String
+    message?: string
 
     /**
      * - Every type has different icon and background color.
@@ -175,7 +176,7 @@ interface ToastProps {
      * - Toast offset from the `bottom` or from the `top` in pixels depending on the `position` prop value.
      * - **Default Value** `30`
      */
-    offset?: Number
+    offset?: number
 
     /**
      * - Toast animaion style.
@@ -187,21 +188,21 @@ interface ToastProps {
      * - Toast animaion duration in ms.
      * - **Default Value** `300`
      */
-    animationDutation?: Number
+    animationDutation?: number
 
     /**
      * - Toast animaion timing function.
      * - Easing functions specify the rate of change of the number over time.
      * - **Default Value** `easeOutExpo`
      */
-    ease?: requestFrameEasing | Function;
+    ease?: requestFrameEasing | ((x: number) => number);
 
     /**
      * - The time that take to hide toast in ms.
      * - Check [easings.net](https://easings.net/) to learn more.
      * - **Default Value** `3000`
      */
-    duration?: Number
+    duration?: number
 
     /**
      * - Toast container custom style like background color and size.
@@ -222,25 +223,25 @@ interface ToastProps {
     /**
      * - Provide you own icon, a function that return a jsx element.
      */
-    customIcon?: Function
+    customIcon?: React.FunctionComponent<any>
 
     /**
      * - Allow toasts to stack on top of each other, if false new toast will replace the old one.
      * - **Default Value** `true`
      */
-    stackable?: Boolean
+    stackable?: boolean
 
     /**
      * - Toasts stack limit number, no new toast will be added to the stack after reaching the limit.
      * - **Default Value** `5`
      */
-    stackLimit?: Number
+    stackLimit?: number
 
     /**
      * - For right to left languages.
      * - **Default Value** `false`
      */
-    rtl?: Boolean
+    rtl?: boolean
 
     /** 
      * - Toast wrapper element z-index css value.
@@ -251,13 +252,13 @@ interface ToastProps {
     /**
      * - Toast Methods
      */
-    ref?: (node: ToastMethods) => void
+    ref?: React.LegacyRef<ToastMethods>
 }
 interface ToastMethods {
     /**
      * - **Note:** Passing params will replace given porps values.
      */
-    showToast?: (message?: String, type?: 'info' | 'warning' | 'error' | 'success') => void
+    showToast?: (message?: string, type?: 'info' | 'warning' | 'error' | 'success') => void
 }
 declare const Toast: React.FunctionComponent<ToastProps>
 
